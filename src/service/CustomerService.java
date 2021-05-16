@@ -2,8 +2,13 @@ package service;
 
 import model.Customer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Scanner;
 
 public class CustomerService {
     // create a map of all the customers there are  without ordering it
@@ -38,6 +43,27 @@ public class CustomerService {
         return null;
 
     }
+
+    public void writeFile(String email) {
+        try {
+            FileOutputStream file = new FileOutputStream("s.txt");
+            Customer customer = getCustomer(email);
+            file.write(customer.toString().getBytes(StandardCharsets.UTF_8));
+            file.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void readFile() {
+        try {
+            File file = new File("s.txt");
+            file.renameTo(new File("Test.txt"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
 /**
  * Students will be designing and implementing a hotel reservation application.

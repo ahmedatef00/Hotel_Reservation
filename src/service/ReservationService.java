@@ -74,7 +74,7 @@ public class ReservationService {
         Set<IRoom> reservedRooms = new HashSet<>();
         for (Reservation reservation : reservations) {
             IRoom room = reservation.getRoom();
-            if ((reservation.getCheckInDate()).after(checkInDate) && (reservation.getCheckOutDate()).before(checkOutDate)) {
+            if ((reservation.getCheckOutDate().after(checkInDate) && reservation.getCheckOutDate().before(checkOutDate))) {
                 reservedRooms.add(room);
             }
         }
@@ -83,8 +83,7 @@ public class ReservationService {
 
 
     // find all of the rooms that are available
-    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate
-
+    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate }
 
 }
 /**
