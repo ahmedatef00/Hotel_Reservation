@@ -1,6 +1,7 @@
 package service;
 
 import model.Customer;
+import netscape.javascript.JSObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,7 @@ public class CustomerService {
         }
 
     }
+
 
     public Collection<Customer> getCustomers() {
 
@@ -53,6 +55,8 @@ public class CustomerService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(this.toString());
+
     }
 
     public static void readFile() {
@@ -62,7 +66,9 @@ public class CustomerService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
     }
+
 
 }
 /**

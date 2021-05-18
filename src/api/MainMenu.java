@@ -5,7 +5,10 @@ import model.Room;
 import service.CustomerService;
 import service.ReservationService;
 
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class MainMenu {
 
@@ -14,8 +17,11 @@ public class MainMenu {
         CustomerService customerService = new CustomerService();
         customerService.addCustomer("ashmed@email.com", "aa", "bb");
 //        ReservationService.getInstance();
-        customerService.writeFile("ashmed@email.com");
+        Thread th = new Thread(() -> {
+            customerService.writeFile("ashmed@email.com");
+        });
 
+        th.start();
 
 
     }

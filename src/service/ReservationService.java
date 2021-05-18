@@ -10,9 +10,9 @@ import java.util.concurrent.Callable;
 
 public class ReservationService {
     //collections to store all the rooms
-    public static Collection<IRoom> rooms = new HashSet<>();
+    private static Collection<IRoom> rooms = new HashSet<>();
     //collections to store all the reservations
-    public static Collection<Reservation> reservations = new HashSet<>();
+    private static Collection<Reservation> reservations = new HashSet<>();
 
     private static ReservationService reservationService = null; //(singleton)
 
@@ -83,9 +83,23 @@ public class ReservationService {
 
 
     // find all of the rooms that are available
-    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate }
+    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate
+    public static Collection<IRoom> findRooms(Date checkin, Date checkout) {
+        Collection<IRoom> freeRooms = new HashSet<>();
+        // loop through all the rooms and check for those that have not been reserved for
+        // that given checkInDate and checkOutDate.
+        Set<IRoom> reservedRooms = getReservedRooms(checkin, checkout);
 
-}
+        for (IRoom room : rooms){
+            if(reservedRooms.contains(room)){
+                freeRooms.add(room);
+            }
+        }
+        return freeRooms;
+
+        }
+
+    }
 /**
  * Students will be designing and implementing a hotel reservation application.
  * The hotel reservation application will allow customers to find and book a hotel room.
