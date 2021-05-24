@@ -1,97 +1,113 @@
 package service;
 
-import model.Customer;
-import model.IRoom;
-import model.Reservation;
-import model.Room;
+import model.*;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 
 public class ReservationService {
-    //collections to store all the rooms
+//    private String roomNumber;
+//    private String roomId;
+//    private Double price;
+//    private RoomType enumeration;
+
+    //Collections to store all of the rooms
     public static Collection<IRoom> rooms = new HashSet<>();
-    //collections to store all the reservations
     public static Collection<Reservation> reservations = new HashSet<>();
 
-    private static ReservationService reservationService = null; //(singleton)
+    private static ReservationService reservationService = null;
 
-    private ReservationService() {
-    }
+    private ReservationService(){}
 
-    //Singleton Object
-    public static ReservationService getInstance() {
-        if (reservationService == null) {
+    // create a static reservation service
+    public static ReservationService getInstance(){
+        if (null == reservationService){
             reservationService = new ReservationService();
         }
         return reservationService;
     }
 
-    //add a new room
+    // Add a new room
     public static void addRoom(IRoom room) {
         Room newRoom = new Room(room.getRoomNumber(), room.getRoomPrice(), room.getRoomType());
         rooms.add(newRoom);
     }
 
-    public static IRoom getRoom(int roomNumber) {
-        for (IRoom room : rooms) {
-            if (room.getRoomNumber().equals(roomNumber)) {
+    // get a room from the collection of rooms
+    public static IRoom getARoom(String roomId) {
+        for (IRoom room: rooms){
+            if ((room.getRoomNumber()).equals(roomId)) {
                 return room;
             }
         }
         return null;
     }
 
-    public static Collection<IRoom> getRooms(int roomNumber) {
-        return rooms;
-    }
-
-    // add a room reservation to the reservation set then rooms will be rooms - 1 ;
-    public static Reservation reserveRoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
-        Reservation newReservation = new Reservation(customer, room, checkInDate, checkOutDate);
+    // add a room reservation to the reservation set
+    public static Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
+        Reservation newReservation = new Reservation(customer, room,checkInDate, checkOutDate);
         reservations.add(newReservation);
         rooms.remove(room);
         return newReservation;
     }
 
-
     // get a customers reservation
-    //Reservation has a customer then get his reservation from Reservation Model and then store them in linked list
-    public static Collection<Reservation> getCustomerReservations(Customer customer) {
-        Collection<Reservation> matchReservations = new LinkedList<>();
-        for (Reservation reservation : reservations) {
-            if (reservation.getCustomer().equals(customer)) ;
-            {
-                matchReservations.add(reservation);
+    public static Collection<Reservation> getCustomersReservation(Customer customer) {
+        Collection<Reservation> matchingReservations = new LinkedList<>();
+        for (Reservation reservation : ReservationService.reservations) {
+            if((reservation.getCustomer()).equals(customer)){
+                matchingReservations.add(reservation);
             }
+
         }
-        return matchReservations;
+        return matchingReservations;
     }
 
+    // find all of the rooms that are available
+    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate
+    public static Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+        Collection<IRoom> freeRooms = new HashSet<>();
+        // loop through all the rooms and check for those that have not been reserved for
+        // that given checkInDate and checkOutDate.
+        Set<IRoom> reservedRooms = getReservedRooms(checkInDate, checkOutDate);
+
+        for (IRoom room : rooms){
+            if(reservedRooms.contains(room)){
+                freeRooms.add(room);
+            }
+        }
+        return freeRooms;
+    }
 
     // helper function to check if a room is available after the checkin in date and before the checkout date
     public static Set<IRoom> getReservedRooms(Date checkInDate, Date checkOutDate) {
         Set<IRoom> reservedRooms = new HashSet<>();
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation: reservations){
             IRoom room = reservation.getRoom();
-            if ((reservation.getCheckOutDate().after(checkInDate) && reservation.getCheckOutDate().before(checkOutDate))) {
+            if ((reservation.getCheckInDate()).after(checkInDate) && (reservation.getCheckOutDate().before(checkOutDate))){
                 reservedRooms.add(room);
             }
         }
         return reservedRooms;
     }
 
+    //print all of the reservations
+    public static void printAllReservation(){
+        for(Reservation reservation : reservations) {
+            System.out.println(reservation);
+        }
+    }
 
-    // find all of the rooms that are available
-    // only return the rooms available greater or equal to the check in date and less or equal to the checkoutdate }
+    // return all of the customers if they are in the customer collection
+    public static Collection<IRoom> getAllRooms(){
+        return rooms;
+    }
 
+    public static void printAllRooms(){
+        Collection<IRoom> availableRooms = getAllRooms();
+
+        for (IRoom room: availableRooms){
+            System.out.println(room);
+        }
+
+    }
 }
-/**
- * Students will be designing and implementing a hotel reservation application.
- * The hotel reservation application will allow customers to find and book a hotel room.
- * Rooms will contain the price along with the dates that the room is reserved.
- * All room bookings will be associated with a single customer account, the customer account will include the customer name
- * (first and last) and email.
- * The application will allow customers to retrieve a list of the hotel's free rooms.
- * In addition, the hotel reservation application will allow customers to find and book rooms based on availability and price.
- */

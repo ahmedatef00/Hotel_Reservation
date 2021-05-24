@@ -1,76 +1,44 @@
 package service;
-
 import model.Customer;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class CustomerService {
-    // create a map of all the customers there are  without ordering it
-    // and can store null values  uniuqe faster in the set collection
-    public static Collection<Customer> setofCustomers = new HashSet<Customer>();
+    //    private static Collection<Customer> setOfCustomers;
+    // create a map of all the customers there are
+    public static Collection<Customer> setOfCustomers = new HashSet<Customer>();
+    // creating a static reference for the customer service class
+    private static CustomerService customerService = null;
 
-    public void addCustomer(String email, String firstName, String lasttname) {
-        Customer newcustomer = new Customer(firstName, lasttname, email);
+    private CustomerService() {}
 
-        setofCustomers.add(newcustomer);
-        if (setofCustomers.add(newcustomer) == false && setofCustomers.size() > 1) {
-            System.out.println("element already there");
+    // create a static customer service
+    public static CustomerService getInstance() {
+        if (null == customerService) {
+            customerService = new CustomerService();
         }
-
+        return customerService;
     }
 
-    public Collection<Customer> getCustomers() {
-
-        if (!setofCustomers.isEmpty()) {
-            return setofCustomers;
-
-        }
-        return null;
+    // create a new object when a customer is being created
+    public static void addCustomer(String email, String firstName, String lastName) {
+        // create a new customer
+        Customer newCustomer = new Customer(email, firstName, lastName);
+        // add the customer to the collection of customers
+        customerService.setOfCustomers.add(newCustomer);
     }
 
-    public Customer getCustomer(String email) {
-        for (Customer customer : setofCustomers) {
-            if (customer.getEmail().equals(email)) {
-                return (customer);
+    // retrieve a customer from the map
+    public static Customer getCustomer(String customerEmail){
+        for (Customer customer : setOfCustomers) {
+            if((customer.getEmail()).equals(customerEmail)){
+                return customer;
             }
         }
         return null;
-
     }
 
-    public void writeFile(String email) {
-        try {
-            FileOutputStream file = new FileOutputStream("s.txt");
-            Customer customer = getCustomer(email);
-            file.write(customer.toString().getBytes(StandardCharsets.UTF_8));
-            file.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    // return all of the customers if they are in the customer collection
+    public static Collection<Customer> getAllCustomers(){
+        return setOfCustomers;
     }
-
-    public static void readFile() {
-        try {
-            File file = new File("s.txt");
-            file.renameTo(new File("Test.txt"));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
 }
-/**
- * Students will be designing and implementing a hotel reservation application.
- * The hotel reservation application will allow customers to find and book a hotel room.
- * Rooms will contain the price along with the dates that the room is reserved.
- * All room bookings will be associated with a single customer account, the customer account will include the customer name
- * (first and last) and email.
- * The application will allow customers to retrieve a list of the hotel's free rooms.
- * In addition, the hotel reservation application will allow customers to find and book rooms based on availability and price.
- */
